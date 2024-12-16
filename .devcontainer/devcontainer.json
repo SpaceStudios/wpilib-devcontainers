@@ -6,7 +6,7 @@
     },
     "customizations": {
       "vscode": {
-        "extensions": ["/opt/vscode-wpilib-2024.3.2.vsix","vscjava.vscode-java-pack","vscjava.vscode-gradle"]
+        "extensions": ["/opt/vscode-wpilib-2025.1.1-beta-2","vscjava.vscode-java-pack","vscjava.vscode-gradle"]
       }
     }
   }
