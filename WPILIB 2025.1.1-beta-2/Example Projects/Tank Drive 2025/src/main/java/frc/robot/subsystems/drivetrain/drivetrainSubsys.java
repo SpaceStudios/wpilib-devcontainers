@@ -5,9 +5,14 @@
 package frc.robot.subsystems.drivetrain;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelPositions;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveTrainConstants;
 import frc.robot.subsystems.drivetrain.drivetrainIO.DriveData;
@@ -20,7 +25,9 @@ public class drivetrainSubsys extends SubsystemBase {
   PIDController leftDrivePID;
   PIDController rightDrivePID;
   DifferentialDriveKinematics kinematics;
+  DifferentialDriveOdometry odometry;
   DriveData data;
+  Field2d field2d;
 
   public drivetrainSubsys(boolean useVolts, drivetrainIO io) {
     voltageBased = useVolts;
@@ -28,6 +35,8 @@ public class drivetrainSubsys extends SubsystemBase {
     setSpeeds = new ChassisSpeeds();
     kinematics = new DifferentialDriveKinematics(0.5);
     data = new DriveData();
+    field2d = new Field2d();
+    SmartDashboard.putData("Field2d", field2d);
   }
 
   public void joystickDrive(double joystick1y,double joystick2x) {
@@ -48,5 +57,10 @@ public class drivetrainSubsys extends SubsystemBase {
   @Override
   public void periodic() {
     mainIO.getData(data);
+    odometry.update(
+      odometry.getPoseMeters().getRotation().plus(Rotation2d.fromRadians(0)), 
+      new DifferentialDriveWheelPositions(data.DriveDistanceLeft, data.DriveDistanceRight));
+
+    field2d.setRobotPose(odometry.getPoseMeters());
   }
 }
